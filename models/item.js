@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const ItemSchema = new Schema({
-  name: { type: String, required: true, maxLength: 100 },
-  price: { tyep: Number, require: true, default: 0 },
+  title: { type: String, required: true },
+  price: { type: Number, required: true, default: 0 },
   description: { type: String, maxLength: 300 },
-  stock: { type: Number, require: true, default: 0 },
-  category: [{ type: Schema.Types.ObjectId, ref: "Category", required: true }],
+  stock: { type: Number, required: true, default: 0 },
+  category: [{ type: Schema.Types.ObjectId, ref: "Category" }],
 });
 
 // Virtual for item's URL
