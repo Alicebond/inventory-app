@@ -2,4 +2,12 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  p Welcome to #[em Inventory App], a very basic Express website following the MDN tutorial 
+
+  h1 Diynamic content 
+
+  p The inventory app has following record counts: 
+
+  ul 
+    li #[strong items:] !{item_count}
+    li #[strong categories:] !{category_count}
