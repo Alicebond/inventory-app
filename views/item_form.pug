@@ -1,0 +1,31 @@
+extends layout 
+
+block content
+
+  h1= title
+  form(method='POST')
+    div.from-group
+      label(for='title') Title: 
+      input#title.form-control(type='text', placeholder='Name of item', name='title', required, value=(undefined===item ? '' : item.title))
+    div.form-group
+      label(for='price') Price:
+      input#price.form-control(type='number', placeholder='price of item', name='price', required, value=(undefined===item ? '' : item.price))
+    div.form-group
+      label(for='description') Description: 
+      textarea#description.form-control(placeholder='Description', name='description', value=(undefined===item ? '' : item.description))
+    div.form-group
+      label Category:
+        div
+          for category in categories
+            div(style='display:inline; padding-right:10px;')
+              if category.checked
+                input.checkbox-input(type='checkbox', name='category', id=category._id, value=category._id, checked)
+              else 
+                input.checkbox-input(type='checkbox', name='category', id=category._id, value=category._id)
+              label(for=category._id) &nbsp;#{category.title}
+    button.btn.btn-primary(type='submit') Submit
+
+  if errors 
+    ul 
+      for error in errors 
+        li!= error.msg
