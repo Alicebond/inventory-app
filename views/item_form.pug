@@ -11,6 +11,9 @@ block content
       label(for='price') Price:
       input#price.form-control(type='number', placeholder='price of item', name='price', required, value=(undefined===item ? '' : item.price))
     div.form-group
+      label(for='stock') Stock:
+      input#stock.form-control(type='number', placeholder='stock of item', name='stock', required, value=(undefined===item ? '' : item.stock))
+    div.form-group
       label(for='description') Description: 
       textarea#description.form-control(placeholder='Description', name='description', value=(undefined===item ? '' : item.description))
     div.form-group

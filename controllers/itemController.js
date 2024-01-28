@@ -102,20 +102,104 @@ exports.item_create_post = [
 
 // Display Item delete form on GET.
 exports.item_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Item delete GET");
+  const item = await Item.findById(req.params.id).exec();
+
+  if (item === null) {
+    res.redirect("/catalog/items");
+  }
+
+  res.render("item_delete", {
+    title: "Delete Item",
+    item: item,
+  });
 });
 
 // Handle Item delete on POST.
 exports.item_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Item delete POST");
+  await Item.findByIdAndDelete(req.body.itemid);
+  res.redirect("/catalog/items");
 });
 
 // Disply Item update form on GET.
 exports.item_update_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Item update GET");
+  const [item, allCategories] = await Promise.all([
+    Item.findById(req.params.id).populate("category").exec(),
+    Category.find().sort({ title: 1 }).exec(),
+  ]);
+
+  if (item === null) {
+    const err = new Error("Item not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  allCategories.forEach((cat) => {
+    if (item.category.includes(cat._id)) cat.checked = "true";
+  });
+
+  res.render("Item_form", {
+    title: "Update Item",
+    categories: allCategories,
+    item: item,
+  });
 });
 
 // Handle Item update on POST.
-exports.item_update_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Item update POST");
-});
+exports.item_update_post = [
+  (req, res, next) => {
+    if (!Array.isArray(req.body.category)) {
+      req.body.category =
+        typeof req.body.category === "undefined" ? [] : [req.body.category];
+    }
+    next();
+  },
+
+  body("title", "Tile must not be empty.").trim().isLength({ min: 1 }).escape(),
+  body("description", "Description must not be empty")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("price", "Price must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("stock", "Stock must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("category.*").escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const item = new Item({
+      title: req.body.title,
+      description: req.body.description,
+      stock: req.body.stock,
+      price: req.body.price,
+      category:
+        typeof req.body.category === "undefined" ? [] : req.body.category,
+      _id: req.params.id,
+    });
+
+    if (!errors.isEmpty()) {
+      const allCategories = await Category.find().sort({ title: 1 }).exec();
+
+      for (const cat of allCategories) {
+        if (item.category.indexOf(cat._id) > -1) {
+          cat.checked = "true";
+        }
+      }
+      res.render("item_form", {
+        title: "Update Item",
+        categories: allCategories,
+        item: item,
+        errors: errors.array(),
+      });
+      return;
+    } else {
+      const updatedItem = await Item.findByIdAndUpdate(req.params.id, item, {});
+      res.redirect(updatedItem.url);
+    }
+  }),
+];
