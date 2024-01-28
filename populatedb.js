@@ -53,9 +53,9 @@ async function createItems() {
   await Promise.all([
     itemCreate(0, "Coca Cola", "710ml regular coke", 20, 2.6, [categories[0]]),
     itemCreate(1, "Chinese Cabbage", "Fresh Chinese Cabage", 10, 5, [
-      categories[1],
+      categories[2],
     ]),
-    itemCreate(2, "Begle", "Fresh Bakery", 20, 1.5, [categories[2]]),
+    itemCreate(2, "Begle", "Fresh Bakery", 20, 1.5, [categories[1]]),
     itemCreate(3, "Ice Cream", "French vnillia ice cream", 20, 3, [
       categories[3],
     ]),
