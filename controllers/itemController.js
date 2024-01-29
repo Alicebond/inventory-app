@@ -137,7 +137,7 @@ exports.item_update_get = asyncHandler(async (req, res, next) => {
     if (item.category.includes(cat._id)) cat.checked = "true";
   });
 
-  res.render("Item_form", {
+  res.render("item_form", {
     title: "Update Item",
     categories: allCategories,
     item: item,
